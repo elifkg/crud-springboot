@@ -1,0 +1,145 @@
+
+<!-- Elif Kurudağ H5200004  -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Veri Önyüzü</title>
+<style>
+table, th, tr{
+border: brown solid 2px;
+}
+</style>
+<script>
+var baseURL= "http://localhost:9090";
+function kisileriYukle(){
+	var xmlhtp = new XMLHttpRequest();
+      xmlhtp.open("GET", baseURL + "/kullanicilar/", true);
+      xmlhtp.onreadystatechange = function(){
+    	 if(xmlhtp.readyState === 4 && xmlhtp.status === 200){
+    		 var kullanicilar = JSON.parse(xmlhtp.responseText);
+    		 var tableStart = "<table><tr><th>ID</th><th>AD</th><th>SOYAD</th><th>DOĞUM TARİHİ</th><th>TELEFON</th></tr>";
+    		 var tableMiddle = "";
+    		 for(var i=0; i<kullanicilar.length; i++){
+    			 tableMiddle+= "<tr>" +
+    			                "<td>" + kullanicilar[i].id + "</td>" +
+    			                "<td>" + kullanicilar[i].ad + "</td>" +
+    			                "<td>" + kullanicilar[i].soyad + "</td>" +
+    			                "<td>" + kullanicilar[i].dogumtarihi + "</td>" +
+    			                "<td>" + kullanicilar[i].telefon + "</td></tr>"
+    			 
+    		 }
+    		 var tableEnd = "</table>";
+
+    		 
+    		 document.getElementById("kisiListesi").innerHTML= tableStart + tableMiddle + tableEnd;
+    		 
+    	 } 
+      };
+	xmlhtp.send();     
+}
+function kullaniciEkle(){
+		var xmlhtp = new XMLHttpRequest();
+	      xmlhtp.open("POST", baseURL + "/KullaniciOlustur", true);
+	      xmlhtp.setRequestHeader("Content-Type","application/json");
+	      xmlhtp.onreadystatechange = function(){
+	     	 if(xmlhtp.readyState === 4 && xmlhtp.status === 200){
+	     		alert("kullanici eklendi");
+	     		kisileriYukle();
+	     	 }
+	      };
+	      
+	      const params ={
+	    		  ad: document.getElementById("ad").value,
+	    		  dogumtarihi: document.getElementById("dogumtarihi").value,
+	    		  soyad: document.getElementById("soyad").value,
+	    		  telefon: document.getElementById("telefon").value           
+	      
+	      }
+	      
+	  	xmlhtp.send(JSON.stringify(params));     
+
+}
+
+///////
+function kullaniciGuncelle(){
+		var xmlhtp = new XMLHttpRequest();
+	      xmlhtp.open("POST", baseURL + "/kullaniciGuncelle", true);
+	      xmlhtp.setRequestHeader("Content-Type","application/json");
+	      xmlhtp.onreadystatechange = function(){
+	     	 if(xmlhtp.readyState === 4 && xmlhtp.status === 200){
+	     		alert("kullanici güncellendi");
+	     		kisileriYukle();
+	     	 }
+	      };
+	      
+	      const params ={
+	    		  id: document.getElementById("guncel_id").value,
+	    		  ad: document.getElementById("guncel_ad").value,
+	    		  dogumtarihi: document.getElementById("guncel_dogumtarihi").value,
+	    		  soyad: document.getElementById("guncel_soyad").value,
+	    		  telefon: document.getElementById("guncel_telefon").value           
+	      
+	      }
+	      
+	  	xmlhtp.send(JSON.stringify(params));     
+
+}
+/////////////////
+
+function kullaniciSil(){
+	var xmlhtp = new XMLHttpRequest();
+	var paramString = "?id=" + document.getElementById("sil_id").value;
+      xmlhtp.open("DELETE", baseURL + "/KullaniciSil/" + paramString , true);
+      xmlhtp.onreadystatechange = function(){
+    	 if(xmlhtp.readyState === 4 && xmlhtp.status === 200){
+    			alert("Kullanıcı silindi");
+	     		kisileriYukle();
+    		 
+    	 } 
+      };
+	xmlhtp.send();     
+}
+
+</script>
+</head>
+<body>
+<p>Kişiler </p>
+<div id="kisiListesi"></div>
+
+<br>
+<input type="button" value="Kişileri Listele" onClick="kisileriYukle();">
+<br>
+<br>
+<p>Kişi Ekleme </p>
+<div>
+<input type="text" id="ad" placeholder="ad"> 
+<input type="text" id="soyad" placeholder="soyad">
+<input type="text" id="dogumtarihi" placeholder="dogumtarihi">
+<input type="text" id="telefon"placeholder="telefon">
+<input type="button" value="Kullanıcı ekle" onClick="kullaniciEkle();">
+<br>
+<br>
+<p>Güncelleme</p>
+<div id="kisiListesi">
+
+<input type="text" id="guncel_id" placeholder="id"> 
+<input type="text" id="guncel_ad" placeholder="güncel ad"> 
+<input type="text" id="guncel_soyad" placeholder="güncel soyad">
+<input type="text" id="guncel_dogumtarihi" placeholder="güncel dogum tarihi">
+<input type="text" id="guncel_telefon"placeholder="güncel telefon">
+<input type="button" value="Kişiyi Güncelle" onClick="kullaniciGuncelle();">
+</div> 
+<br>
+<br>
+<p>Silme</p>
+<div>
+<input type="text" id="sil_id" placeholder="id girin">
+<input type="button" value="Kişiyi Sil" onClick="kullaniciSil();">
+
+
+
+</div>
+</div>
+</body>
+</html>
